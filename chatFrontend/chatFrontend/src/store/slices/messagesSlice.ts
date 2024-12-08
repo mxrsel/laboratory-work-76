@@ -1,5 +1,6 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IMessage} from "../../types.ts";
+import {fetchMessages} from "../thunks/messagesThunk.ts";
 
 interface MessagesState {
     messages: IMessage[];
@@ -16,7 +17,28 @@ const initialState: MessagesState = {
 const messagesSlice = createSlice({
     name: "messages",
     initialState,
-    reducers: {}
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(
+                fetchMessages.pending, (state) => {
+                    state.isLoading = true;
+                    state.isError = false
+                }
+            )
+            .addCase(
+                fetchMessages.fulfilled, (state, action: PayloadAction<IMessage[]>) => {
+                    state.isLoading = false;
+                    state.messages = action.payload
+                }
+            )
+            .addCase(
+                fetchMessages.rejected, (state) => {
+                    state.isLoading = false
+                    state.isError = true
+                }
+            )
+    }
 })
 
 export const messagesReducer = messagesSlice.reducer;
