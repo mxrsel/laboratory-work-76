@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {IMessage, MessageList} from "../../types.ts";
+import {IMessage, MessageApi, MessageList} from "../../types.ts";
 import axiosApi from "../../../axiosApi.ts";
 
 export const fetchMessages = createAsyncThunk<IMessage[], void>(
@@ -20,3 +20,11 @@ export const fetchMessages = createAsyncThunk<IMessage[], void>(
         });
         return newMessage;
     });
+
+export const sendMessage = createAsyncThunk<void, MessageApi>(
+    'messages/sendMessage',
+    async(message) => {
+        await axiosApi.post('/messages', {...message})
+    }
+);
+
